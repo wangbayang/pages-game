@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "VITE_ENV_TEST_KEY=123 vite --open --host 0.0.0.0",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build-tsc": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "VITE_ENV_TEST_KEY=123 vite preview --open --host 0.0.0.0"
   },
