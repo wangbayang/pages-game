@@ -28,9 +28,9 @@ function App() {
   return (
     <>
       <div id="gameroot" />
-      <div id="changeButton" onClick={changeMode}>
+      {/* <div id="changeButton" onClick={changeMode}>
         {isGaming ? "切换测试" : "切换游戏"}
-      </div>
+      </div> */}
     </>
   );
 }
