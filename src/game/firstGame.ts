@@ -53,7 +53,7 @@ class FirstGameScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, "sky");
+    this.add.image(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, "sky").setDisplaySize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     this.platforms = this.physics.add.staticGroup();
 
