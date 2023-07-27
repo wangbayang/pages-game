@@ -11,6 +11,7 @@ import dudePng from "../assets/dude.png";
 import qimaMP3 from "../assets/audio/qima.mp3";
 import jumpMP3 from "../assets/audio/jump.mp3";
 import growUpMP3 from "../assets/audio/growUp.mp3";
+import deathMP3 from "../assets/audio/death.mp3";
 
 let score = 0,
   gameOver = false,
@@ -46,8 +47,9 @@ class FirstGameScene extends Phaser.Scene {
     });
 
     this.load.audio("qima", qimaMP3);
-    this.load.audio("jump", jumpMP3, { instances: 2 });
+    this.load.audio("jump", jumpMP3, { instances: 5 });
     this.load.audio("growUp", growUpMP3, { instances: 100 });
+    this.load.audio("death", deathMP3);
   }
 
   create() {
@@ -55,16 +57,14 @@ class FirstGameScene extends Phaser.Scene {
 
     this.platforms = this.physics.add.staticGroup();
 
-    this.platforms
-      .create(WINDOW_WIDTH / 2, WINDOW_HEIGHT - 32, "ground")
-      .setScale(2.5)
-      .refreshBody();
+    this.createGround(WINDOW_WIDTH / 2, WINDOW_HEIGHT - 32, WINDOW_WIDTH, 40);
+    this.createGround(WINDOW_WIDTH / 4, WINDOW_HEIGHT * 0.7, WINDOW_WIDTH / 3);
+    this.createGround(WINDOW_WIDTH / 3, WINDOW_HEIGHT * 0.5, WINDOW_WIDTH / 4);
+    this.createGround(WINDOW_WIDTH / 2, WINDOW_HEIGHT * 0.3, WINDOW_WIDTH / 4);
+    this.createGround((WINDOW_WIDTH / 4) * 3, WINDOW_HEIGHT * 0.5, WINDOW_WIDTH / 4);
+    this.createGround((WINDOW_WIDTH / 4) * 3, WINDOW_HEIGHT * 0.1, WINDOW_WIDTH / 5);
 
-    this.platforms.create(WINDOW_WIDTH - 150, 150, "ground");
-    this.platforms.create(100, 350, "ground");
-    this.platforms.create(WINDOW_WIDTH - 200, 550, "ground");
-
-    this.player = this.physics.add.sprite(100, 450, "dude");
+    this.player = this.physics.add.sprite(50, WINDOW_HEIGHT * 0.8, "dude");
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
 
@@ -137,6 +137,8 @@ class FirstGameScene extends Phaser.Scene {
     } else if (this.cursors.right.isDown) {
       this.player.setVelocityX(160);
       this.player.anims.play("right", true);
+    } else if (this.cursors.down.isDown) {
+      this.player.setVelocityY(500);
     } else {
       this.player.setVelocityX(0);
       this.player.anims.play("turn");
@@ -149,6 +151,10 @@ class FirstGameScene extends Phaser.Scene {
         detune: jumpTime % 3 ? 0 : -1200,
       });
     }
+  }
+
+  createGround(x: number, y: number, width = WINDOW_WIDTH, height = 20) {
+    this.platforms.create(x, y, "ground").setDisplaySize(width, height).refreshBody();
   }
 
   loadSound() {
@@ -171,7 +177,7 @@ class FirstGameScene extends Phaser.Scene {
 
   collectStar(player, star: Phaser.Types.Physics.Arcade.ImageWithDynamicBody) {
     star.disableBody(true, true);
-    (this as FirstGameScene).sound.play("growUp");
+    this.sound.play("growUp");
 
     score += 10;
     this.scoreText.setText(`score:${score}`);
@@ -185,7 +191,7 @@ class FirstGameScene extends Phaser.Scene {
       const bomb = this.bombs.create(x, 16, "bomb");
       bomb.setBounce(1);
       bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      bomb.setVelocity(Phaser.Math.Between(-500, 500), 200);
     }
   }
 
@@ -193,6 +199,7 @@ class FirstGameScene extends Phaser.Scene {
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play("turn");
+    this.sound.play("death");
 
     gameOver = true;
   }
